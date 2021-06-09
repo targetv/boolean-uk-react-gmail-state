@@ -6,19 +6,50 @@ import './App.css'
 import { useState } from 'react'
 
 function App() {
-  // Use initialEmails for state
-  const [emails, setEmails] = useState(initialEmails)
-  const [hideReadEmails, setHideReadEmails] = useState(false)
+  const [emails, setEmails] = useState(initialEmails) //  State emails: [initialEmails]
+  const [readEmails, setReadEmails] = useState(false) // State readEmails: false
+  /* 
+    Toggle read
 
-  const toggleEmail = email => {
-    setEmails(
-      emails.map(thingsToChange => {
-        return thingsToChange.id === email.id
-          ? { ...email, read: !email.read }
-          : { thingsToChange }
-      })
-    )
+    Input : Targeted Email 
+    Action: Imutabily change state key value of object
+    Output: nothing
+
+  */
+
+  function toggleRead(targetEmail) {
+    const updatedEmails = []
+    for (const email of emails) {
+      if (email.id === targetEmail.id) {
+        updatedEmails.push({ ...email, read: !email.read })
+      }
+    }
+    setEmails(updatedEmails)
   }
+
+  function toggleFav(targetEmail) {
+    const updatedEmails = []
+    for (const email of emails) {
+      if (email.id === targetEmail.id) {
+        updatedEmails.push({ ...email, starred: !email.starred })
+      } else {
+        updatedEmails.push(email)
+      }
+    }
+    setEmails(updatedEmails)
+  }
+
+  function filteredEmails() {
+    const filteredEmails = []
+    for (const email of emails) {
+      if (!email.read) {
+        filteredEmails.push({ ...email })
+      }
+    }
+    return filteredEmails
+  }
+
+  const emailsToRender = readEmails ? filteredEmails() : emails
 
   return (
     <div className="app">
@@ -41,31 +72,36 @@ function App() {
           </li>
 
           <li className="item toggle">
-            <label for="hide-read">Hide read</label>
+            <label htmlFor="hide-read">Hide read</label>
             <input
               id="hide-read"
               type="checkbox"
-              // Checked get value from state
-              checked={hideReadEmails}
+              checked={readEmails}
               // On change uses event listiner, that updates the state
-              onChange={event => {
-                setHideReadEmails(event.target.checked)
-              }}
+              onChange={() => setReadEmails(!readEmails)}
             />
           </li>
         </ul>
       </nav>
       <main className="emails">
         <ul>
-          {emails.map(email => {
+          {emailsToRender.map(email => {
             return (
-              <li className="email">
+              <li
+                className={email.read ? 'email read' : 'email'}
+                key={email.id}
+              >
                 <input
                   type="checkbox"
                   checked={email.read}
-                  onChange={() => toggleEmail(email)}
+                  onChange={() => toggleRead(email)}
                 ></input>
-                <img className="star-checkbox"></img>
+                <input
+                  type="checkbox"
+                  className="star-checkbox"
+                  checked={email.starred}
+                  onChange={() => toggleFav(email)}
+                ></input>
                 <h3 className="title">{email.sender}</h3>
                 <h3 className="title">{email.title}</h3>
               </li>
