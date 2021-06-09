@@ -11,7 +11,7 @@ function App() {
   /* 
     Toggle read
 
-    Input : Targeted Email 
+    Input : Targeted Email - Object 
     Action: Imutabily change state key value of object
     Output: nothing
 
@@ -22,6 +22,8 @@ function App() {
     for (const email of emails) {
       if (email.id === targetEmail.id) {
         updatedEmails.push({ ...email, read: !email.read })
+      } else {
+        updatedEmails.push(email)
       }
     }
     setEmails(updatedEmails)
@@ -77,7 +79,6 @@ function App() {
               id="hide-read"
               type="checkbox"
               checked={readEmails}
-              // On change uses event listiner, that updates the state
               onChange={() => setReadEmails(!readEmails)}
             />
           </li>
