@@ -13,11 +13,9 @@ function App() {
   const toggleEmail = email => {
     setEmails(
       emails.map(thingsToChange => {
-        if (thingsToChange.id === email.id) {
-          return { ...email, read: !email.read }
-        } else {
-          return thingsToChange
-        }
+        return thingsToChange.id === email.id
+          ? { ...email, read: !email.read }
+          : { thingsToChange }
       })
     )
   }
